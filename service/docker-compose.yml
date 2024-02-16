@@ -4,8 +4,4 @@ services:
   app:
     build: app
     ports:
-      - "8000:8000"
-  nginx: 
-    build: nginx
-    ports:
       - "80:80"

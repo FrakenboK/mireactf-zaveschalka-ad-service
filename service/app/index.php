@@ -1,7 +1,5 @@
 <?php
 
-echo 123;
-?>
+$user = unserialize(file_get_contents('./users/2deb000b57bfac9d72c14d4ed967b572.txt'));
 
-
-<img src="images/image.png">
+echo $user->login;

@@ -12,8 +12,8 @@ class User {
         $this->save();
     }
 
-    private function save(){
-        file_put_contents('./users/'.md5($this->login).'.txt', serialize($this));
+    private function save() {
+        file_put_contents('./users/'.md5($this->login.getenv('SECRET')).'.txt', serialize($this));
     }
 
 }

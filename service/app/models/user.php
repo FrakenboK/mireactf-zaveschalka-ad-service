@@ -5,7 +5,7 @@ class User {
     public $phone;
     public $email;
 
-    public function __construct(protected array $attributes){
+    public function __construct(array $attributes){
         foreach ($attributes as $name => $value) {
             $this->$name = $value;
         }

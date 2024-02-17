@@ -21,9 +21,10 @@
               <a href="dashboard.php">Список завещаний</a>
               <a href="dashboard.php">Список пользователей</a>
               <a href="logout.php">Выйти</a>';
-      } 
-      echo '<a href="login.php">Вход в аккаунт</a>
+      } else{
+        echo '<a href="login.php">Вход в аккаунт</a>
               <a href="register.php">Регистрация</a>';
+      }
       ?>
     </div>
   </div>

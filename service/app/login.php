@@ -39,13 +39,13 @@ if (isset($_POST['login']) && isset($_POST['password'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="static/css/styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-<title>Zaveshyatelnitsa</title>
+<title>Завещательница</title>
 </head>
 <body>
 
 <div class="content-wrap">
     <div class="navbar">
-        <span class="navbar-brand">Zaveshyatelnitsa</span>
+        <span class="navbar-brand">Завещательница</span>
         <div>
             <a href="login.php">Вход в аккаунт</a>
             <a href="register.php">Регистрация</a>

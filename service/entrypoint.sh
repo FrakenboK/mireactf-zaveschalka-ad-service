@@ -1,9 +1,6 @@
 #!/bin/bash
-cd /app
-
-mkdir users
-mkdir wills
+cd /var/www/html
 
 export SECRET=$(php -r 'echo md5(random_bytes(32));')
 
-php -S 0.0.0.0:80
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf

@@ -7,29 +7,29 @@ body, html {
 }
 .content-wrap {
   min-height: 100%;
-  margin-bottom: -60px; /* отрицательный маржин равный высоте footer */
+  margin-bottom: -60px;
 }
 .content-wrap::after {
   content: "";
   display: block;
 }
 .footer, .content-wrap::after {
-  height: 20px; /* Высота footer */
+  height: 20px; 
 }
 .navbar {
   background-color: #007bff;
   color: white;
-  padding: 20px 20px; /* Увеличьте верхний и нижний padding */
+  padding: 20px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px; /* Увеличение размера шрифта */
+  font-size: 18px;
   box-shadow: 0 15px 20px rgba(0,0,0,0.1);
 }
 .navbar-brand {
-  font-size: 30px; /* Увеличиваем размер шрифта для названия */
-  font-weight: bold; /* Делаем шрифт жирным */
-  color: white; /* Можно задать цвет шрифта, если нужно */
+  font-size: 30px;
+  font-weight: bold;
+  color: white; 
 }
 .navbar a {
   color: white;
@@ -55,10 +55,9 @@ th {
   padding: 20px;
   text-align: center;
   position: relative;
-  margin-top: -50px; /* отрицательный маржин равный высоте footer */
+  margin-top: -50px;
   clear: both;
 }
-
 /* ------------------------------------- */
 .message {
   margin: 20px auto;
@@ -69,20 +68,20 @@ th {
 }
 
 .message-large {
-  font-size: 25px; /* Больший размер шрифта для большего сообщения */
+  font-size: 25px; 
 }
 
 .message-error {
   text-align: center;
   max-width: 40%;
   border-left: 10px solid #ff0000;
-  font-size: 15px; /* Меньший размер шрифта для меньшего сообщения */
+  font-size: 15px;
 }
 
 /* ------------------------------------- */
 .form-wrapper {
-  width: 600px; /* Фиксированная ширина формы */
-  margin: 20px auto; /* Центрирование формы */
+  width: 600px; 
+  margin: 20px auto; 
   padding: 30px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -119,36 +118,36 @@ th {
 .input-text,
 .textarea-text {
   font-size: 20px;
-  width: 100%; /* Вычитаем padding слева и справа */
+  width: 100%; 
   padding: 10px;
   margin-bottom: 20px;
   align-items: center;
   border-radius: 5px;
   border: 1px solid #ddd;
-  box-sizing: border-box; /* Включает padding в общую ширину */
-  resize: none; /* Позволяет пользователю изменять размер только по вертикали */
+  box-sizing: border-box; 
+  resize: none; 
 }
 
 .textarea-text-big {
-  width: calc(100% - 20px); /* Вычитаем padding слева и справа */
+  width: calc(100% - 20px);
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  box-sizing: border-box; /* Включает padding в общую ширину */
-  resize: vertical; /* Позволяет пользователю изменять размер только по вертикали */
+  box-sizing: border-box; 
+  resize: vertical;
 }
 
 .input-area-text {
   font-size: 20px;
-  width: 50%; /* Вычитаем padding слева и справа */
+  width: 50%; 
   padding: 10px;
   margin-bottom: 20px;
   align-self: left;
   border-radius: 5px;
   border: 1px solid #ddd;
-  box-sizing: border-box; /* Включает padding в общую ширину */
-  resize: none; /* Позволяет пользователю изменять размер только по вертикали */
+  box-sizing: border-box; 
+  resize: none; 
 }
 
 .submit-button {
@@ -179,20 +178,20 @@ th {
   background-color: #0056b3;
 }
 
-/* ------------------------------------- */
+
 
 .welcome-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80vh; /* Полная высота видимой области */
+  height: 80vh; 
   background-size: cover;
   background-position: center;
   text-align: center;
 }
 
 .welcome-message {
-  font-size: 48px; /* Большой размер текста для приветствия */
+  font-size: 48px; 
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -207,7 +206,7 @@ th {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  text-decoration: none; /* Для ссылки оформленной под кнопку */
+  text-decoration: none;
 }
 
 .welcome-button:hover {
@@ -215,6 +214,6 @@ th {
 }
 
 .welcome-message ul {
-  list-style-type: none; /* Или любой другой стиль маркера */
+  list-style-type: none;
   padding-left: 20px;
 }

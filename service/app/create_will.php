@@ -6,14 +6,14 @@ include "models/will.php";
 include "models/user.php";
 
 if (isset($_POST['title']) && isset($_POST['will'])) {
-    if (!preg_match('/^[a-zA-Z0-9]+$/', $_POST['title']) || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['will'])){
+    if (strlen($_POST['title']) > 0 && strlen($_POST['will']) > 0 && !preg_match('/^[a-zA-Z0-9]+$/', $_POST['title']) || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['will'])){
         $err = 'Не получишь завещание!';
         header('Location: /create_will.php?err='.urlencode($err));
         echo($err);
         die();
     }
 
-    $will = new Will([$_POST['title'], $_POST['will']]);
+    $will = new Will(['title' => $_POST['title'], 'will' => $_POST['will']]);
 
     $current_user = unserialize(file_get_contents('users/'.md5($_SESSION['user'].getenv('SECRET'))));
     if (!isset($current_user->wills)) {
@@ -44,7 +44,9 @@ if (isset($_POST['title']) && isset($_POST['will'])) {
         $user->save();
     }
 
-    // REDIRECT TO WILL INFO
+    header('Location: /will.php?id='.$will->will_id);
+    echo('Успешно создано завещание');
+    die();
 }
 
 
@@ -57,16 +59,16 @@ if (isset($_POST['title']) && isset($_POST['will'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="static/css/styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-<title>Zaveshyatelnitsa</title>
+<title>Завещательница</title>
 </head>
 <body>
 
 <div class="content-wrap">
     <div class="navbar">
-        <span class="navbar-brand">Zaveshyatelnitsa</span>
+        <span class="navbar-brand">Завещательница</span>
         <div>
             <a href="profile.php">Профиль</a>
-            <a href="dashboard.php">Список завещаний</a>
+            <a href="create_will.php">Создать завещание</a>
             <a href="logout.php">Выйти</a>
         </div>
     </div>    

@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="static/css/styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-<title>Zaveshyatelnitsa</title>
+<title>Завещательница</title>
 </head>
 <body>
 
 <!-- baseline -->
 <div class="content-wrap">
   <div class="navbar">
-    <span class="navbar-brand">Zaveshyatelnitsa</span>
+    <span class="navbar-brand">Завещательница</span>
     <div>
       <?php
       session_start();
@@ -21,7 +21,7 @@
               <a href="dashboard.php">Список завещаний</a>
               <a href="dashboard.php">Список пользователей</a>
               <a href="logout.php">Выйти</a>';
-      } else{
+      } else {
         echo '<a href="login.php">Вход в аккаунт</a>
               <a href="register.php">Регистрация</a>';
       }

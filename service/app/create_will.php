@@ -1,4 +1,3 @@
-
 <?php
 
 include("utils/auth_check.php");
@@ -15,7 +14,7 @@ if (isset($_POST['title']) && isset($_POST['will'])) {
 
     $will = new Will(['title' => $_POST['title'], 'will' => $_POST['will']]);
 
-    $current_user = unserialize(file_get_contents('users/'.md5($_SESSION['user'].getenv('SECRET'))));
+    $current_user = unserialize(file_get_contents('users/'.md5($_SESSION['user'].getenv('SECRET')).'.txt'));
     if (!isset($current_user->wills)) {
         $current_user->wills = array();
     }
@@ -26,7 +25,7 @@ if (isset($_POST['title']) && isset($_POST['will'])) {
     for($i = 0; $i < count($_POST) - 2; ++$i) {
         $username = $_POST['username'.$i];
         $user_id = md5($username.getenv('SECRET'));
-        $filename = 'users/'.$user_id;
+        $filename = 'users/'.$user_id.'.txt';
 
         if (!file_exists($filename)) {
             continue;

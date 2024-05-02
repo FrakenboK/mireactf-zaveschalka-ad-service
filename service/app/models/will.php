@@ -9,6 +9,6 @@ class Will {
     }
 
     private function save() {
-        file_put_contents('./wills/'.$this->will_id, serialize($this));
+        file_put_contents('./wills/'.$this->will_id.'.txt', serialize($this));
     }
 }

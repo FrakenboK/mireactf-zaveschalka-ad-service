@@ -8,6 +8,6 @@ class User {
     }
 
     public function save() {
-        file_put_contents('./users/'.md5($this->login.getenv('SECRET')), serialize($this));
+        file_put_contents('./users/'.md5($this->login.getenv('SECRET')).'.txt', serialize($this));
     }
 }

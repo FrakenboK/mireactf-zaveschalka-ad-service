@@ -22,7 +22,7 @@
     </div>
   </div>    
     <?php
-      if (isset($_GET['id']) && file_exists('wills/'.$_GET['id'])){
+      if (isset($_GET['id']) && file_exists('wills/'.$_GET['id'].'.txt')){
         include("models/user.php");
         include("models/will.php");
     
@@ -31,10 +31,10 @@
       
         $uid = md5($username.$secret);
 
-        $user = unserialize(file_get_contents('users/'.$uid));
+        $user = unserialize(file_get_contents('users/'.$uid.'.txt'));
 
         if (isset($user->wills) && in_array($_GET['id'], $user->wills)) {
-          $will = unserialize(file_get_contents('wills/'.$_GET['id']));
+          $will = unserialize(file_get_contents('wills/'.$_GET['id'].'.txt'));
 
           echo '<div class="form-wrapper">
                   <div class="form-title">Ознакомьтесь с последними словами ушедшего</div>

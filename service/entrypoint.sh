@@ -1,5 +1,4 @@
-#!/bin/bash
-cd /var/www/html
+#!/bin/sh
 
 export SECRET=$(php -r 'echo md5(random_bytes(32));')
 

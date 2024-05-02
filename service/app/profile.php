@@ -27,13 +27,12 @@
   <div class="form-title">Профиль пользователя</div>
   <?php
     include("models/user.php");
-    session_start();
 
     $username = $_SESSION['user'];
     $secret = getenv('SECRET');
 
     $uid = substr(`echo -n '$username$secret' | md5sum`, 0, 32);
-    $user = unserialize(file_get_contents('users/'.$uid));
+    $user = unserialize(file_get_contents('users/'.$uid.'.txt'));
 
     echo '<div class="profile-info">
             <p><strong>Имя пользователя:</strong> '.$user->login.'</p>

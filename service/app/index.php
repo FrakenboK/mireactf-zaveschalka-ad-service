@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +18,9 @@
     <span class="navbar-brand">Завещательница</span>
     <div>
       <?php
-      session_start();
       if (isset($_SESSION['user'])){
         echo '<a href="profile.php">Профиль</a>
-              <a href="dashboard.php">Список завещаний</a>
-              <a href="dashboard.php">Список пользователей</a>
+              <a href="create_will.php">Создать завещание</a>
               <a href="logout.php">Выйти</a>';
       } else {
         echo '<a href="login.php">Вход в аккаунт</a>

@@ -1,15 +1,14 @@
 <?php
-
+session_start();
 include "models/user.php";
 
-session_start();
 if (isset($_SESSION['user'])) {
     header('Location: /profile.php');
     die();
 }
 
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $filename = './users/'.md5($_POST['login'].getenv('SECRET'));
+    $filename = './users/'.md5($_POST['login'].getenv('SECRET').'.txt');
     if (!file_exists($filename)){
         $err = 'Броу, такого пользователя нет...';
         header('Location: /login.php?err='.urlencode($err));

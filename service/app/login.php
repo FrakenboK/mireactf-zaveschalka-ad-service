@@ -9,10 +9,11 @@ if (isset($_SESSION['user'])) {
 }
 
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $filename = './users/'.md5($_POST['login'].getenv('SECRET')).'.txt';
+    $filename = './users/'.md5($_POST['login'].getenv('SECRET'));
     if (!file_exists($filename)){
         $err = 'Броу, такого пользователя нет...';
         header('Location: /login.php?err='.urlencode($err));
+        echo($err);
         die();
     }
 
@@ -20,11 +21,13 @@ if (isset($_POST['login']) && isset($_POST['password'])) {
     if ($_POST['password'] !== $user->password){
         $err = 'Ацццааца, неправильные креды(';
         header('Location: /login.php?err='.urlencode($err));
+        echo($err);
         die();
     }
 
-    $_SESSION['user'] = $user;
+    $_SESSION['user'] = $user->login;
     header('Location: /profile.php');
+    echo('Успешный вход');
     die();
 } 
 
@@ -65,22 +68,11 @@ if (isset($_POST['login']) && isset($_POST['password'])) {
         '.htmlspecialchars($_GET['err'], ENT_QUOTES, 'UTF-8').'
         </div>';
     }
-    
     ?>
 </div>
 <!-- about -->
 <div class="footer">
 Сервис завещаний - с нами надежнее! | 8-800-5555-35-35
 </div>
-
-<script>
-let count = 1;
-document.querySelector('.add-button').addEventListener('click', function() {    
-    var newDiv = document.createElement('div');
-    newDiv.innerHTML = '<textarea id="noteTextarea" name="user'+count+'" class="textarea-text" placeholder="Логин получателя доступа" rows="4"></textarea>';
-    document.querySelector('.form-field').appendChild(newDiv);
-    count += 1;
-});
-</script>
 </body>
 </html>

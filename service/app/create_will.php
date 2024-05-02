@@ -2,14 +2,53 @@
 <?php
 
 include("utils/auth_check.php");
+include "models/will.php";
+include "models/user.php";
 
+if (isset($_POST['title']) && isset($_POST['will'])) {
+    if (!preg_match('/^[a-zA-Z0-9]+$/', $_POST['title']) || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['will'])){
+        $err = 'Не получишь завещание!';
+        header('Location: /create_will.php?err='.urlencode($err));
+        echo($err);
+        die();
+    }
+
+    $will = new Will([$_POST['title'], $_POST['will']]);
+
+    $current_user = unserialize(file_get_contents('users/'.md5($_SESSION['user'].getenv('SECRET'))));
+    if (!isset($current_user->wills)) {
+        $current_user->wills = array();
+    }
+    array_push($current_user->wills, $will->will_id); 
+    
+    $current_user->save();
+
+    for($i = 0; $i < count($_POST) - 2; ++$i) {
+        $username = $_POST['username'.$i];
+        $user_id = md5($username.getenv('SECRET'));
+        $filename = 'users/'.$user_id;
+
+        if (!file_exists($filename)) {
+            continue;
+        }
+        $user = unserialize(file_get_contents($filename));
+
+        if (!isset($user->wills)) {
+            $user->wills = array();
+        }
+        if (in_array($will->will_id, $user->wills)) {
+            continue;
+        }
+
+        array_push($user->wills, $will->will_id);
+        $user->save();
+    }
+
+    // REDIRECT TO WILL INFO
+}
 
 
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +67,6 @@ include("utils/auth_check.php");
         <div>
             <a href="profile.php">Профиль</a>
             <a href="dashboard.php">Список завещаний</a>
-            <a href="dashboard.php">Список пользователей</a>
             <a href="logout.php">Выйти</a>
         </div>
     </div>    
@@ -38,7 +76,7 @@ include("utils/auth_check.php");
         <form class= "hui" action="create_will.php" method="post">
             <div class="form-field">
             <label for="noteTextarea"></label>
-            <textarea id="noteTextarea" name="name" class="textarea-text" placeholder="Называние завещания"></textarea>
+            <input id="noteTextarea" name="title" class="input-area-text" placeholder="Называние завещания"></textarea>
             <textarea id="noteTextarea" name="will" class="textarea-text-big" placeholder="Завещание" rows="4"></textarea>
             </div>
             <div class="form-field access-field">
@@ -49,8 +87,14 @@ include("utils/auth_check.php");
 
             <button type="submit" class="submit-button">Сохранить</button>
         </form>
-    
     </div>
+    <?php
+        if (isset($_GET['err'])){
+            echo '<div class="message message-error">
+            '.htmlspecialchars($_GET['err'], ENT_QUOTES, 'UTF-8').'
+            </div>';
+        }
+    ?>
 
 </div>
 <!-- about -->
@@ -59,10 +103,10 @@ include("utils/auth_check.php");
 </div>
 
 <script>
-let count = 1;
+let count = 0;
 document.querySelector('.add-button').addEventListener('click', function() {    
     var newDiv = document.createElement('div');
-    newDiv.innerHTML = '<textarea id="noteTextarea" name="user'+count+'" class="textarea-text" placeholder="Логин получателя доступа" rows="4"></textarea>';
+    newDiv.innerHTML = '<input id="noteTextarea" name="username'+count+'" class="input-area-text" placeholder="Логин получателя доступа" rows="4"></textarea>';
     document.querySelector('.form-field').appendChild(newDiv);
     count += 1;
 });

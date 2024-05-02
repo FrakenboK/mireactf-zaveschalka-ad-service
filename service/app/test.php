@@ -1,3 +1,7 @@
 <?php
+$asd = 'asd';
+$secret = getenv('SECRET');
+//echo `echo -n '$asd$secret' | md5sum`;
 
-echo getenv('SECRET');
+
+echo md5((string)microtime());

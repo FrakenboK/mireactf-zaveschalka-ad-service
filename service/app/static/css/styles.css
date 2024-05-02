@@ -139,6 +139,18 @@ th {
   resize: vertical; /* Позволяет пользователю изменять размер только по вертикали */
 }
 
+.input-area-text {
+  font-size: 20px;
+  width: 50%; /* Вычитаем padding слева и справа */
+  padding: 10px;
+  margin-bottom: 20px;
+  align-self: left;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  box-sizing: border-box; /* Включает padding в общую ширину */
+  resize: none; /* Позволяет пользователю изменять размер только по вертикали */
+}
+
 .submit-button {
   display: block;
   width: 100%;

@@ -12,33 +12,35 @@ if (isset($_POST['login']) && isset($_POST['password']) && isset($_POST['phone']
     if (!preg_match('/^[a-zA-Z0-9]+$/', $_POST['login']) || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['password'])){
         $err = 'Ацаца, никакого тебе завещения за такие креды!';
         header('Location: /register.php?err='.urlencode($err));
+        echo($err);
         die();
     }
 
     if (!preg_match('/^[0-9]+$/', $_POST['phone'])){
         $err = 'Ацаца, никакого тебе завещения за такой номер телефона!';
         header('Location: /register.php?err='.urlencode($err));
+        echo($err);
         die();
     }
 
     if (!preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i', $_POST['email'])){
         $err = 'Ацаца, никакого тебе завещения за такую почту!';
-        echo $err;
         header('Location: /register.php?err='.urlencode($err));
+        echo($err);
         die();
     }
-    if (file_exists('./users/'.md5($_POST['login'].getenv('SECRET')).'.txt')){
-        $err = 'Такой пользователь уже заполнил завещание';
-        header('Location: /register.php?err='.urlencode($err));
-        die();
-    }
- 
 
+    if (file_exists('./users/'.md5($_POST['login'].getenv('SECRET')).'.txt')){
+        $err = 'Такой пользователь уже существует';
+        header('Location: /register.php?err='.urlencode($err));
+        echo($err);
+        die();
+    }
 
     $user = new User($_POST);
-    echo 'User created';
-    $_SESSION['user'] = $user;
+    $_SESSION['user'] = $user->login;
     header('Location: /profile.php');
+    echo('Создал пользователя '.$_SESSION['user']);
     die();
 } 
 
@@ -83,7 +85,6 @@ if (isset($_POST['login']) && isset($_POST['password']) && isset($_POST['phone']
     }
     ?>
 </div>
-<!-- about -->
 <div class="footer">
 Сервис завещаний - с нами надежнее! | 8-800-5555-35-35
 </div>

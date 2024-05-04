@@ -1,6 +1,4 @@
-from typing import Optional
 from urllib.parse import urlparse, parse_qs
-
 from checklib import BaseChecker, Status
 import requests
 

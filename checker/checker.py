@@ -2,7 +2,6 @@
 import random
 import sys
 
-import requests
 from checklib import *
 from checklib import status
 
@@ -65,17 +64,17 @@ class Checker(BaseChecker):
         self.cquit(Status.OK)
 
     def put(self, flag_id: str, flag: str, vuln: str):
+        # Регистрируем первого пользователя
         session1 = self._session_with_req_ua()
-        username1, password1, email1 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}' 
-        phone1 = self._random_phone
-
+        username1, password1, email1, phone1 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
         self.lib.register(session1, username1, password1, email1, phone1)
 
+        # Регистрируем второго пользователя
         session2 = self._session_with_req_ua()
         username2, password2, email2, phone2 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
-
         self.lib.register(session2, username2, password2, email2, phone2)
 
+        # Создаем заметку от первого пользователя и шарим второму
         title = self._random_chars
         will_id = self.lib.create_will(session1, title, flag, username2)
 
@@ -84,17 +83,23 @@ class Checker(BaseChecker):
     def get(self, flag_id: str, flag: str, vuln: str):
         username1, password1, username2, password2, will_id = flag_id.split(':')
         
+        # Логинимся за первого пользователя
         session1 = self._session_with_req_ua()
         self.lib.login(session1, username1, password1)
 
+        # Проверяем доступ к флагу
         self.lib.check_will(session1, will_id, flag)
         
+        # Логинимся за второго пользователя
         session2 = self._session_with_req_ua()
         self.lib.login(session2, username2, password2)
 
+        # Проверяем доступ к флагу от пользователя, которому шарили записку
         self.lib.check_will(session2, will_id, flag, True)
 
         self.cquit(Status.OK)
+
+
 if __name__ == '__main__':
     c = Checker(sys.argv[2])
     try:

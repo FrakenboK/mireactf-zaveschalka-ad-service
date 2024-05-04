@@ -8,7 +8,7 @@ if (isset($_SESSION['user'])) {
 }
 
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $filename = './users/'.md5($_POST['login'].getenv('SECRET').'.txt');
+    $filename = './users/'.md5($_POST['login'].getenv('SECRET')).'.txt';
     if (!file_exists($filename)){
         $err = 'Броу, такого пользователя нет...';
         header('Location: /login.php?err='.urlencode($err));

@@ -31,15 +31,17 @@ class Checker(BaseChecker):
 
     def check(self):
         session = self.session_with_req_ua()
-        username, password, email = rnd_username(), rnd_password(), f'{rnd_string(10)}@{rnd_string(5)}.{rnd_string(3)}' 
-        phone = random.randint(1000000, 10000000)
+        username1, password1, email1 = rnd_username(), rnd_password(), f'{rnd_string(10)}@{rnd_string(5)}.{rnd_string(3)}' 
+        phone1 = random.randint(1000000, 10000000)
+
+        username2, password2, email2 = rnd_username(), rnd_password(), f'{rnd_string(10)}@{rnd_string(5)}.{rnd_string(3)}' 
+        phone2 = random.randint(1000000, 10000000)
         
         ping = self.lib.ping()
         if not ping:
             self.cquit(Status.DOWN)
         
-        print(username, password)
-        self.lib.register(session, username, password, email, phone)
+        self.lib.register(session, username1, password1, email1, phone1)
         #self.lib.signin(session, username, password)
 
         self.cquit(Status.OK)
@@ -49,8 +51,8 @@ class Checker(BaseChecker):
         u = rnd_username()
         p = rnd_password()
 
-        self.lib.signup(sess, u, p)
-        self.lib.signin(sess, u, p)
+        self.lib.register(sess, u, p)
+        self.lib.login(sess, u, p)
 
         note = flag
         id = self.lib.writeNote(sess, u, p, note)

@@ -24,7 +24,7 @@ class WillLib:
         except Exception as e:
             return 0
 
-    def register(self, session: requests.Session, username, password, email: str, phone: int, ) -> str:
+    def register(self, session: requests.Session, username, password, email: str, phone: int) -> str:
         resp = session.post(f'{self.api_url}/register.php', data={
             'login': username,
             'password': password,
@@ -35,14 +35,12 @@ class WillLib:
         resp_data = self.c.get_text(resp, 'Failed to signup: invalid data')
         return resp_data
 
-    def signin(self, session: requests.Session, username: str, password: str,
-               status: checklib.Status = checklib.Status.MUMBLE):
-        resp = session.post(f'{self.api_url}/', data={
+    def login(self, session: requests.Session, username: str, password: str):
+        resp = session.post(f'{self.api_url}/login.php', data={
             'login': username,
-            'password': password,
-            'action': 'signin'
+            'password': password
         })
-        self.c.assert_eq(resp.status_code, 200, 'Failed to signin', status=status)
+        self.c.assert_eq(resp.status_code, 200, 'Failed to signin')
         resp_data = self.c.get_text(resp, 'Failed to signin: invalid data')
         return resp_data
     

@@ -1,21 +1,25 @@
 from typing import Optional
+from urllib.parse import urlparse, parse_qs
 
-import checklib
-from checklib import BaseChecker
+from checklib import BaseChecker, Status
 import requests
-from bs4 import BeautifulSoup
 
 PORT = 1782
 
 class WillLib:
     @property
     def api_url(self):
-        return f'http://{self.host}:{self.port}/'
+        return f'http://{self.host}:{self.port}'
 
     def __init__(self, checker: BaseChecker, port=PORT, host=None):
         self.c = checker
         self.port = port
         self.host = host or self.c.host
+
+    def _get_will_id(self, url: str) -> str:
+        parsed_url = urlparse(url)
+        query_params = parse_qs(parsed_url.query)
+        return query_params.get('id', [None])[0]
 
     def ping(self):
         try:
@@ -23,38 +27,40 @@ class WillLib:
             return 1
         except Exception as e:
             return 0
+        
+    def _check_profile(self, content: str, username: str, email: str, phone: str):
+        self.c.assert_in(username, content, f'Failed to get profile data for {self.api_url} (username)')
+        self.c.assert_in(email, content, f'Failed to get profile data for {self.api_url} (email)')
+        self.c.assert_in(phone, content, f'Failed to get profile data for {self.api_url} (phone)')
 
-    def register(self, session: requests.Session, username, password, email: str, phone: int) -> str:
+    def register(self, session: requests.Session, username: str, password: str, email: str, phone: str):
         resp = session.post(f'{self.api_url}/register.php', data={
             'login': username,
             'password': password,
             'phone': phone,
             'email': email 
         })
-        self.c.assert_eq(resp.status_code, 200, 'Failed to register')
-        resp_data = self.c.get_text(resp, 'Failed to signup: invalid data')
-        return resp_data
+        self.c.assert_in('profile.php', resp.url, f'Failed to register for {self.api_url}')
+        self._check_profile(resp.text, username, email, phone)
 
-    def login(self, session: requests.Session, username: str, password: str):
+
+    def login(self, session: requests.Session, username: str, password: str, email: str = "", phone: str = ""):
         resp = session.post(f'{self.api_url}/login.php', data={
             'login': username,
             'password': password
         })
-        self.c.assert_eq(resp.status_code, 200, 'Failed to signin')
-        resp_data = self.c.get_text(resp, 'Failed to signin: invalid data')
-        return resp_data
+        self.c.assert_in('profile.php', resp.url, f'Failed to login for {self.api_url}')
+        self._check_profile(resp.text, username, email, phone)
     
-    def writeNote(self, session: requests.Session, username: str, password: str, note):
-        resp = session.post(f'{self.api_url}/notes', data={'note': note})
-        self.c.assert_eq(resp.status_code, 200, 'Failed to write note')
-
-        soup = BeautifulSoup(resp.text, "html.parser")
-        req = soup.find("h3", class_="id")
-        
-        return req.text
+    def create_will(self, session: requests.Session, title: str, will: str, username_to_share: str):
+        resp = session.post(f'{self.api_url}/create_will.php', data={
+            'title': title,
+            'will': will,
+            'username0': username_to_share
+        })
+        self.c.assert_nin('create_will.php', resp.url, 'Failed to create will')
+        return self._get_will_id(resp.url)
     
-    def checkNote(self, session: requests.Session, username: str, password: str, id, flag: str):
-        resp = session.get(f'{self.api_url}/notes?id={id}')
-        if flag in resp.text:
-            return 1
-        return 0
+    def check_will(self, session: requests.Session, will_id: str, flag: str, is_shared: bool = False):
+        resp = session.get(f'{self.api_url}/will.php?id={will_id}')
+        self.c.assert_in(flag, resp.text, f"Failed to get {'shared ' if is_shared else ''}will", Status.CORRUPT)

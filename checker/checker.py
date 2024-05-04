@@ -8,6 +8,8 @@ from checklib import status
 
 import will_lib
 
+ALPH = [chr(i) for i in range(65, 65 + 26)] + [chr(i) for i in range(97, 97 + 26)]
+
 class Checker(BaseChecker):
     vulns: int = 1
     timeout: int = 15
@@ -20,8 +22,20 @@ class Checker(BaseChecker):
     def __init__(self, *args, **kwargs):
         super(Checker, self).__init__(*args, **kwargs)
         self.lib = will_lib.WillLib(self)
+    
+    @property
+    def _random_length(self) -> int:
+        return random.randint(3,15)
+    
+    @property
+    def _random_phone(self) -> int:
+        return str(random.randint(1000000, 10000000))
+    
+    @property
+    def _random_chars(self) -> str:    
+        return rnd_string(self._random_length, ALPH)
 
-    def session_with_req_ua(self):
+    def _session_with_req_ua(self):
         sess = get_initialized_session()
         if random.randint(0, 10) != 1:
             sess.headers['User-Agent'] = random.choice(self.req_ua_agents)
@@ -30,49 +44,57 @@ class Checker(BaseChecker):
         return sess
 
     def check(self):
-        session = self.session_with_req_ua()
-        username1, password1, email1 = rnd_username(), rnd_password(), f'{rnd_string(10)}@{rnd_string(5)}.{rnd_string(3)}' 
-        phone1 = random.randint(1000000, 10000000)
+        session1 = self._session_with_req_ua()
+        session2 = self._session_with_req_ua()
 
-        username2, password2, email2 = rnd_username(), rnd_password(), f'{rnd_string(10)}@{rnd_string(5)}.{rnd_string(3)}' 
-        phone2 = random.randint(1000000, 10000000)
-        
         ping = self.lib.ping()
         if not ping:
             self.cquit(Status.DOWN)
-        
-        self.lib.register(session, username1, password1, email1, phone1)
-        #self.lib.signin(session, username, password)
 
+        username1, password1, email1, phone1 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
+        username2, password2, email2, phone2 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
+        
+        # Проверяем регистрацию
+        self.lib.register(session1, username1, password1, email1, phone1)
+        self.lib.register(session2, username2, password2, email2, phone2)
+
+        # Проверяем логин с чистой сессией
+        clear_session = self._session_with_req_ua()
+        self.lib.login(clear_session, username1, password1, email1, phone1)
+    
         self.cquit(Status.OK)
 
     def put(self, flag_id: str, flag: str, vuln: str):
-        sess = self.session_with_req_ua()
-        u = rnd_username()
-        p = rnd_password()
+        session1 = self._session_with_req_ua()
+        username1, password1, email1 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}' 
+        phone1 = self._random_phone
 
-        self.lib.register(sess, u, p)
-        self.lib.login(sess, u, p)
+        self.lib.register(session1, username1, password1, email1, phone1)
 
-        note = flag
-        id = self.lib.writeNote(sess, u, p, note)
+        session2 = self._session_with_req_ua()
+        username2, password2, email2, phone2 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
 
-        if id:
-            self.cquit(Status.OK, u, f"{u}:{p}:{id}")
+        self.lib.register(session2, username2, password2, email2, phone2)
 
-        self.cquit(Status.MUMBLE)
+        title = self._random_chars
+        will_id = self.lib.create_will(session1, title, flag, username2)
+
+        self.cquit(Status.OK, f"{username1}:{username2}:{will_id}", f"{username1}:{password1}:{username2}:{password2}:{will_id}")
 
     def get(self, flag_id: str, flag: str, vuln: str):
-        u, p, id = flag_id.split(':')
-        sess = self.session_with_req_ua()
-        self.lib.signin(sess, u, p, status=Status.CORRUPT)
+        username1, password1, username2, password2, will_id = flag_id.split(':')
+        
+        session1 = self._session_with_req_ua()
+        self.lib.login(session1, username1, password1)
 
-        check = self.lib.checkNote(sess, u, p, id, flag)
-        if not check:
-            self.cquit(Status.CORRUPT)
+        self.lib.check_will(session1, will_id, flag)
+        
+        session2 = self._session_with_req_ua()
+        self.lib.login(session2, username2, password2)
+
+        self.lib.check_will(session2, will_id, flag, True)
 
         self.cquit(Status.OK)
-
 if __name__ == '__main__':
     c = Checker(sys.argv[2])
     try:

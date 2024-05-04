@@ -30,7 +30,7 @@ if (isset($_POST['login']) && isset($_POST['password']) && isset($_POST['phone']
         die();
     }
 
-    if (file_exists('./users/'.md5($_POST['login'].getenv('SECRET')))){
+    if (file_exists('./users/'.md5($_POST['login'].getenv('SECRET')).'.txt')){
         $err = 'Такой пользователь уже существует';
         header('Location: /register.php?err='.urlencode($err));
         echo($err);

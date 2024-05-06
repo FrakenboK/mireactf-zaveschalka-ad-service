@@ -18,13 +18,6 @@ class WillLib:
         parsed_url = urlparse(url)
         query_params = parse_qs(parsed_url.query)
         return query_params.get('id', [None])[0]
-
-    def ping(self):
-        try:
-            requests.get(f'{self.api_url}')
-            return 1
-        except Exception as e:
-            return 0
         
     def _check_profile(self, content: str, username: str, email: str, phone: str):
         self.c.assert_in(username, content, f'Failed to get profile data for (username)')
@@ -32,38 +25,49 @@ class WillLib:
         self.c.assert_in(phone, content, f'Failed to get profile data (phone)')
 
     def register(self, session: requests.Session, username: str, password: str, email: str, phone: str):
-        resp = session.post(f'{self.api_url}/register.php', data={
-            'login': username,
-            'password': password,
-            'phone': phone,
-            'email': email 
-        })
+        try:
+            resp = session.post(f'{self.api_url}/register.php', data={
+                'login': username,
+                'password': password,
+                'phone': phone,
+                'email': email 
+            })
+        except requests.exceptions.ConnectionError:
+            self.c.cquit(Status.DOWN)
         self.c.assert_in('profile.php', resp.url, f'Failed to register')
         self.c.assert_eq(200, resp.status_code, 'Failed to register')
         self._check_profile(resp.text, username, email, phone)
 
 
     def login(self, session: requests.Session, username: str, password: str, email: str = "", phone: str = ""):
-        resp = session.post(f'{self.api_url}/login.php', data={
-            'login': username,
-            'password': password
-        })
+        try:
+            resp = session.post(f'{self.api_url}/login.php', data={
+                'login': username,
+                'password': password
+            })
+        except requests.exceptions.ConnectionError:
+            self.c.cquit(Status.DOWN)
         self.c.assert_in('profile.php', resp.url, f'Failed to login')
         self.c.assert_eq(200, resp.status_code, 'Failed to login')
         self._check_profile(resp.text, username, email, phone)
     
     def create_will(self, session: requests.Session, title: str, will: str, username_to_share: str):
-        resp = session.post(f'{self.api_url}/create_will.php', data={
-            'title': title,
-            'will': will,
-            'username0': username_to_share
-        })
+        try:
+            resp = session.post(f'{self.api_url}/create_will.php', data={
+                'title': title,
+                'will': will,
+                'username0': username_to_share
+            })
+        except requests.exceptions.ConnectionError:
+            self.c.cquit(Status.DOWN)
         self.c.assert_in('will.php?id=', resp.url, 'Failed to create will')
-        print(resp.status_code)
         self.c.assert_eq(200, resp.status_code, 'Failed to create will')
         return self._get_will_id(resp.url)
     
     def check_will(self, session: requests.Session, will_id: str, flag: str, is_shared: bool = False):
-        resp = session.get(f'{self.api_url}/will.php?id={will_id}')
+        try:
+            resp = session.get(f'{self.api_url}/will.php?id={will_id}')
+        except requests.exceptions.ConnectionError:
+            self.c.cquit(Status.DOWN)
         self.c.assert_in(flag, resp.text, f"Failed to get {'shared ' if is_shared else ''}will", Status.CORRUPT)
         self.c.assert_eq(200, resp.status_code, 'Failed to create will')

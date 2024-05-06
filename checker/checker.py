@@ -46,10 +46,6 @@ class Checker(BaseChecker):
         session1 = self._session_with_req_ua()
         session2 = self._session_with_req_ua()
 
-        ping = self.lib.ping()
-        if not ping:
-            self.cquit(Status.DOWN)
-
         username1, password1, email1, phone1 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
         username2, password2, email2, phone2 = rnd_username(), rnd_password(), f'{self._random_chars}@{self._random_chars}.{self._random_chars}', self._random_phone
         

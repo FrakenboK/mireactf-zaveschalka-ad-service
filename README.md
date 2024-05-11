@@ -71,7 +71,7 @@ if (count($_POST) > 4) {
 }
 ```
 
-[Exploit](./exploit_object_injection.py)
+[Exploit](./exploit/exploit_object_injection.py)
 
 ### Bug №2
 
@@ -97,6 +97,6 @@ Fix option:
     RewriteRule . - [F,NC]
 ```
 
-[Exploit](./exploit_apache_missconfig.py)
+[Exploit](./exploit/exploit_apache_missconfig.py)
 
 ### Powered by [FrakenboK](https://t.me/helloworlddlrowolleh)
